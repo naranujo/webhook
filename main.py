@@ -5,6 +5,22 @@ from twilio.rest import Client
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 
+from decouple import config as config_decouple
+from config import config
+
+def create_app(enviroment):
+    app = Flask(__name__)
+
+    app.config.from_object(enviroment)
+
+    return app
+
+enviroment = config['development']
+if config_decouple('PRODUCTION', default=False):
+    enviroment = config['production']
+
+app = create_app(enviroment)
+
 load_dotenv()
 
 account_sid = os.getenv('TWILIO_ACCOUNT_SID')
